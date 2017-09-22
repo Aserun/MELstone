@@ -1,0 +1,108 @@
+﻿//transform
+float $moveX = 0.1;
+float $moveY = 0.1;
+float $moveZ = 0.1;
+//rotation
+float $rotationX = 0;
+float $rotationY = 0;
+float $rotationZ = 0;
+//max value size
+int $maxSize = 10000;
+proc changeSlider()
+{
+
+    global float $moveX;
+    global float $moveY;
+    global float $moveZ;
+    global float $rotationX;
+    global float $rotationY;
+    global float $rotationZ;
+	// get value
+	$moveX = `floatSliderGrp -query -value moveX`;
+	$moveY = `floatSliderGrp -query -value moveY`;
+	$moveZ = `floatSliderGrp -query -value moveZ`;
+	$rotationX = `floatSliderGrp -query -value rotationX`;
+	$rotationY = `floatSliderGrp -query -value rotationY`;
+	$rotationZ = `floatSliderGrp -query -value rotationZ`;
+}
+proc makeStone()
+{
+    global float $moveX;
+    global float $moveY;
+    global float $moveZ;
+    global float $rotationX;
+    global float $rotationY;
+    global float $rotationZ;
+    global int $maxSize;
+    string $base_str = "stone";
+    int $objA = rand(0,$maxSize);
+    int $objB = rand($maxSize+1,$maxSize*2);
+    int $newObj = rand($maxSize*2+1,$maxSize*3);
+    string $s_objA = $base_str + (string)$objA;
+    string $s_objB = $base_str + (string)$objB;
+    string $s_newA  = $base_str + (string)$newObj;
+    polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+    polySmooth  -mth 0 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 1 -ps 0.1 -ro 1 -ch 1 pCube1;
+    move -r $moveX $moveY $moveZ;
+    rotate -r -os -fo $rotationX $rotationY $rotationZ;
+    polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+    polySmooth  -mth 0 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 1 -ps 0.1 -ro 1 -ch 1 pCube2;
+    rename pCube1 $s_objA;
+    rename pCube2 $s_objB;
+    polyCBoolOp -op 3 -ch 1 -preserveColor 0 -classification 1 -name $s_objB  $s_objB $s_objA;
+    rename $s_objB $s_newA;
+}
+proc makeRandStone()
+{
+    global int $maxSize;
+    float $moveX = rand(0.1,0.3);
+    float $moveY = rand(0.1,0.3);
+    float $moveZ = rand(0.1,0.3);
+    float $rotationX = rand(0 , 360);
+    float $rotationY = rand(0 , 360);
+    float $rotationZ = rand(0 , 360);
+    string $base_str = "stone";
+    int $objA = rand(0,$maxSize);
+    int $objB = rand($maxSize+1,$maxSize*2);
+    int $newObj = rand($maxSize*2+1,$maxSize*3);
+    string $s_objA = $base_str + (string)$objA;
+    string $s_objB = $base_str + (string)$objB;
+    string $s_newA  = $base_str + (string)$newObj;
+    polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+    polySmooth  -mth 0 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 1 -ps 0.1 -ro 1 -ch 1 pCube1;
+    move -r $moveX $moveY $moveZ;
+    rotate -r -os -fo $rotationX $rotationY $rotationZ;
+    polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+    polySmooth  -mth 0 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 1 -ps 0.1 -ro 1 -ch 1 pCube2;
+    rename pCube1 $s_objA;
+    rename pCube2 $s_objB;
+    polyCBoolOp -op 3 -ch 1 -preserveColor 0 -classification 1 -name $s_objB $s_objB $s_objA;
+    rename $s_objB $s_newA;
+}
+window -title "石ころ作成";
+	columnLayout;
+	floatSliderGrp -label "移動x" -field true
+	-min 0.1 -max 0.4 -step 0.01-value 1.0
+	-changeCommand "changeSlider" moveX;
+	floatSliderGrp -label "移動y" -field true 
+	-min 0.1 -max 0.4 -step 0.01-value 1.0
+	-changeCommand "changeSlider" moveY;
+	floatSliderGrp -label "移動z" -field true 
+	-min 0.1 -max 0.4 -step 0.01-value 1.0 
+	-changeCommand "changeSlider" moveZ;
+	floatSliderGrp -label "回転x" -field true
+	-min 0.1 -max 360 -step 1 -value 1.0
+	-changeCommand "changeSlider" rotationX;
+	floatSliderGrp -label "回転y" -field true 
+	-min 0.1 -max 360 -step 1 -value 1.0
+	-changeCommand "changeSlider" rotationY;
+	floatSliderGrp -label "回転z" -field true 
+	-min 0.1 -max 360 -step 1 -value 1.0 
+	-changeCommand "changeSlider" rotationZ;
+	rowColumnLayout -numberOfColumns 3;
+	button -label "手動作成" -align "center" -command "makeStone";
+	button -label "自動作成" -align "center" -command "makeRandStone";
+	button -label "キャンセル" -align "center" -command "deleteUI $window";
+	setParent ..;
+	showWindow;
+	
